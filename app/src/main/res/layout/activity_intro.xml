@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/intro_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -45,7 +46,7 @@
         android:textColor="@color/secondary_text_color"
         android:textSize="@dimen/intro_text_size" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_sign_in_intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,6 +54,7 @@
         android:layout_marginStart="@dimen/btn_marginStartEnd"
         android:layout_marginTop="@dimen/intro_screen_sign_in_btn_marginTop"
         android:layout_marginEnd="@dimen/btn_marginStartEnd"
+        app:backgroundTint="@null"
         android:background="@drawable/shape_button_rounded"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
@@ -70,6 +72,7 @@
         android:layout_marginStart="@dimen/btn_marginStartEnd"
         android:layout_marginTop="@dimen/intro_screen_sign_up_btn_marginTop"
         android:layout_marginEnd="@dimen/btn_marginStartEnd"
+        app:backgroundTint="@null"
         android:background="@drawable/white_border_shape_button_rounded"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
