@@ -2,6 +2,7 @@ package com.example.projemanag
 
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -13,10 +14,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        fullScreen()
 
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         findViewById<TextView>(R.id.tv_app_name).typeface = typeFace
@@ -25,5 +23,18 @@ class SplashActivity : AppCompatActivity() {
             startActivity(Intent(this, IntroActivity::class.java))
             finish()
         }, 2500)
+    }
+
+    private fun fullScreen() {
+        if (Build.VERSION.SDK_INT in 16..29) { // lower api
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        } else if (Build.VERSION.SDK_INT >= 30) {
+            window.decorView.windowInsetsController!!.hide(
+                android.view.WindowInsets.Type.statusBars()
+            )
+        }
     }
 }

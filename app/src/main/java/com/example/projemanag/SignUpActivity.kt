@@ -1,5 +1,6 @@
 package com.example.projemanag
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
@@ -13,10 +14,7 @@ class SignUpActivity : AppCompatActivity() {
         binding = ActivitySighUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        fullScreen()
 
         setupActionBar()
     }
@@ -30,6 +28,19 @@ class SignUpActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24)
 
             binding.toolbarSignUpActivity.setNavigationOnClickListener { onBackPressed() }
+        }
+    }
+
+    private fun fullScreen() {
+        if (Build.VERSION.SDK_INT in 16..29) { // lower api
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        } else if (Build.VERSION.SDK_INT >= 30) {
+            window.decorView.windowInsetsController!!.hide(
+                android.view.WindowInsets.Type.statusBars()
+            )
         }
     }
 }
