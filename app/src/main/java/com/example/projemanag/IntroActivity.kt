@@ -19,6 +19,10 @@ class IntroActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_sign_up_intro).setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
+
+        findViewById<Button>(R.id.btn_sign_in_intro).setOnClickListener {
+            startActivity(Intent(this, SingInActivity::class.java))
+        }
     }
 
     private fun fullScreen() {
