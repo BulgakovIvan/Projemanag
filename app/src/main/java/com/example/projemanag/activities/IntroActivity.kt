@@ -5,12 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Button
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import com.example.projemanag.R
 
-class IntroActivity : AppCompatActivity() {
-    @RequiresApi(Build.VERSION_CODES.R)
+class IntroActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
