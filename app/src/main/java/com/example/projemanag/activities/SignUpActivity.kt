@@ -1,13 +1,11 @@
 package com.example.projemanag.activities
 
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowManager
-import com.example.projemanag.R
+import android.text.TextUtils
+import android.widget.Toast
 import com.example.projemanag.databinding.ActivitySighUpBinding
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySighUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,32 +14,36 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         fullScreen()
+        setupActionBar(binding.toolbarSignUpActivity)
 
-        setupActionBar()
+        binding.btnSignUp.setOnClickListener { registerUser() }
     }
 
-    private fun setupActionBar() {
-        setSupportActionBar(binding.toolbarSignUpActivity)
+    private fun registerUser() {
+        val name: String = binding.etName.text.toString().trim { it <= ' '}
+        val email: String = binding.etEmail.text.toString().trim { it <= ' '}
+        val password: String = binding.etPassword.text.toString().trim { it <= ' '}
 
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24)
-
-            binding.toolbarSignUpActivity.setNavigationOnClickListener { onBackPressed() }
+        if (validateForm(name, email, password)) {
+            Toast.makeText(this, "Register user", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun fullScreen() {
-        if (Build.VERSION.SDK_INT in 16..29) { // lower api
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        } else if (Build.VERSION.SDK_INT >= 30) {
-            window.decorView.windowInsetsController!!.hide(
-                android.view.WindowInsets.Type.statusBars()
-            )
+    private fun validateForm(name: String, email: String, password: String) : Boolean {
+        return when {
+            TextUtils.isEmpty(name) -> {
+                showErrorShackBar("Please enter a name")
+                false
+            }
+            TextUtils.isEmpty(email) -> {
+                showErrorShackBar("Please enter an email address")
+                false
+            }
+            TextUtils.isEmpty(password) -> {
+                showErrorShackBar("Please enter a password")
+                false
+            }
+            else -> true
         }
     }
 }

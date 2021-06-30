@@ -22,17 +22,4 @@ class IntroActivity : BaseActivity() {
             startActivity(Intent(this, SingInActivity::class.java))
         }
     }
-
-    private fun fullScreen() {
-        if (Build.VERSION.SDK_INT in 16..29) { // lower api
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
-        } else if (Build.VERSION.SDK_INT >= 30) {
-            window.decorView.windowInsetsController!!.hide(
-                android.view.WindowInsets.Type.statusBars()
-            )
-        }
-    }
 }

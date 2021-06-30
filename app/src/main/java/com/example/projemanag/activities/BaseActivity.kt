@@ -1,10 +1,12 @@
 package com.example.projemanag.activities
 
 import android.app.Dialog
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -65,5 +67,38 @@ open class BaseActivity : AppCompatActivity() {
         snackBarView.setBackgroundColor(
             ContextCompat.getColor(this, R.color.snackbar_error_color))
         snackBar.show()
+    }
+
+
+
+
+
+
+
+
+
+    fun setupActionBar(toolbar: androidx.appcompat.widget.Toolbar) {
+        setSupportActionBar(toolbar)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24)
+
+            toolbar.setNavigationOnClickListener { onBackPressed() }
+        }
+    }
+
+    fun fullScreen() {
+        if (Build.VERSION.SDK_INT in 16..29) { // lower api
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        } else if (Build.VERSION.SDK_INT >= 30) {
+            window.decorView.windowInsetsController!!.hide(
+                android.view.WindowInsets.Type.statusBars()
+            )
+        }
     }
 }
