@@ -1,4 +1,4 @@
-package com.example.projemanag
+package com.example.projemanag.activities
 
 import android.content.Intent
 import android.os.Build
@@ -7,6 +7,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.projemanag.R
 
 class IntroActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
