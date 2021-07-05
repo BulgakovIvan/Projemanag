@@ -6,6 +6,8 @@ import android.util.Log
 import android.widget.Toast
 import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivitySighUpBinding
+import com.example.projemanag.firebase.FirestoreClass
+import com.example.projemanag.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -24,6 +26,19 @@ class SignUpActivity : BaseActivity() {
         binding.btnSignUp.setOnClickListener { registerUser() }
     }
 
+    fun userRegisteredSuccess() {
+        Toast.makeText(
+            this,
+            "You have successfully registered.",
+            Toast.LENGTH_LONG
+        ).show()
+
+        hideProgressDialog()
+
+        FirebaseAuth.getInstance().signOut()
+        finish()
+    }
+
     private fun registerUser() {
         val name: String = binding.etName.text.toString().trim { it <= ' '}
         val email: String = binding.etEmail.text.toString().trim { it <= ' '}
@@ -34,17 +49,13 @@ class SignUpActivity : BaseActivity() {
 
             FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                    hideProgressDialog()
+
                     if (task.isSuccessful) {
                         val firebaseUser: FirebaseUser = task.result!!.user!!
                         val registeredEmail = firebaseUser.email!!
-                        Toast.makeText(
-                            this,
-                            "$name you have successfully registered the email address $registeredEmail",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        FirebaseAuth.getInstance().signOut()
-                        finish()
+                        val user = User(firebaseUser.uid, name, registeredEmail)
+
+                        FirestoreClass().registerUser(this, user)
                     } else {
                         Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT).show()
                     }
