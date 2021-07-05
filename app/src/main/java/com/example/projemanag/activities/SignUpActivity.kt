@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseUser
 
 class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySighUpBinding
-    val TAG = "ups"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,8 @@ class SignUpActivity : BaseActivity() {
             showProgressDialog(resources.getString(R.string.please_wait))
 
             FirebaseAuth.getInstance()
-                .createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                .createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
 
                     if (task.isSuccessful) {
                         val firebaseUser: FirebaseUser = task.result!!.user!!
@@ -59,6 +59,7 @@ class SignUpActivity : BaseActivity() {
                     } else {
                         Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT).show()
                     }
+
                 }
         }
     }

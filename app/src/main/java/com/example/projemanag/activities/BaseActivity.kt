@@ -69,14 +69,6 @@ open class BaseActivity : AppCompatActivity() {
         snackBar.show()
     }
 
-
-
-
-
-
-
-
-
     fun setupActionBar(toolbar: androidx.appcompat.widget.Toolbar) {
         setSupportActionBar(toolbar)
 

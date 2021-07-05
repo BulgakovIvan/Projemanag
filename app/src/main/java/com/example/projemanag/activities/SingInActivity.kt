@@ -7,12 +7,14 @@ import android.util.Log
 import android.widget.Toast
 import com.example.projemanag.R
 import com.example.projemanag.databinding.ActivitySingInBinding
+import com.example.projemanag.firebase.FirestoreClass
+import com.example.projemanag.models.User
+import com.example.projemanag.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 
 class SingInActivity : BaseActivity() {
     private lateinit var binding: ActivitySingInBinding
     private lateinit var auth: FirebaseAuth
-    val TAG = "ups"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +26,13 @@ class SingInActivity : BaseActivity() {
 
         auth = FirebaseAuth.getInstance()
         binding.btnSignIn.setOnClickListener { singInUser() }
+    }
+
+    fun singInSuccess(user: User) {
+        hideProgressDialog()
+
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     private fun singInUser() {
@@ -38,13 +47,11 @@ class SingInActivity : BaseActivity() {
                     hideProgressDialog()
 
                     if (task.isSuccessful) {
-                        Log.e(TAG, "createUserWithEmail:success")
-                        val user = auth.currentUser
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                        Log.e(Constants.TAG, "createUserWithEmail: success")
+                        FirestoreClass().signInUser(this)
 
                     } else {
-                        Log.e(TAG, "createUserWithEmail:failure", task.exception)
+                        Log.e(Constants.TAG, "createUserWithEmail: failure", task.exception)
                         Toast.makeText(baseContext, task.exception!!.message,
                             Toast.LENGTH_LONG).show()
                     }
