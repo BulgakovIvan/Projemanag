@@ -7,9 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import com.example.projemanag.R
+import com.example.projemanag.firebase.FirestoreClass
+import com.example.projemanag.utils.Constants.TAG
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,13 @@ class SplashActivity : AppCompatActivity() {
         Looper.myLooper()?.let {
             Handler(it).postDelayed(
                 {
-                    startActivity(Intent(this, IntroActivity::class.java))
+
+                    var currentUserId = FirestoreClass().getCurrentUserId()
+                    if (!currentUserId.isNullOrEmpty()) {
+                        startActivity(Intent(this, MainActivity::class.java))
+                    } else {
+                        startActivity(Intent(this, IntroActivity::class.java))
+                    }
                     finish()
                 },
                 2500
