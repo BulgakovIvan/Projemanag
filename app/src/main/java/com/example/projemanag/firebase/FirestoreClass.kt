@@ -1,6 +1,9 @@
 package com.example.projemanag.firebase
 
+import android.app.Activity
 import android.util.Log
+import com.example.projemanag.activities.BaseActivity
+import com.example.projemanag.activities.MainActivity
 import com.example.projemanag.activities.SignUpActivity
 import com.example.projemanag.activities.SingInActivity
 import com.example.projemanag.models.User
@@ -25,16 +28,23 @@ class FirestoreClass {
             }
     }
 
-    fun signInUser(activity: SingInActivity) {
+    fun signInUser(activity: Activity) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
             .addOnSuccessListener { document ->
                 val loggedInUser = document.toObject(User::class.java)
                 if (loggedInUser != null)
-                    activity.singInSuccess(loggedInUser)
+
+                    when (activity) {
+                        is SingInActivity -> activity.singInSuccess(loggedInUser)
+                        is MainActivity -> activity.updateNavigationUserDetails(loggedInUser)
+                    }
 
             }.addOnFailureListener { e ->
+                if (activity is BaseActivity) {
+                    activity.hideProgressDialog()
+                }
                 Log.e("ups", "Register error! ", e)
             }
     }
