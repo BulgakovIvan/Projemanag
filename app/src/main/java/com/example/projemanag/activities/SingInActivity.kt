@@ -48,7 +48,7 @@ class SingInActivity : BaseActivity() {
 
                     if (task.isSuccessful) {
                         Log.e(Constants.TAG, "createUserWithEmail: success")
-                        FirestoreClass().signInUser(this)
+                        FirestoreClass().loadUserData(this)
 
                     } else {
                         Log.e(Constants.TAG, "createUserWithEmail: failure", task.exception)
