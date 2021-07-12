@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             requestCode == MY_PROFILE_REQUEST_CODE) {
             FirestoreClass().loadUserData(this)
         } else {
-            Log.e(TAG, "Cancelled")
+            Log.e(TAG, "No update for profile activity")
         }
     }
 
@@ -81,8 +81,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .into(findViewById(R.id.nav_user_image))
 
         findViewById<TextView>(R.id.tv_username).text = user.name
-
-        Log.e(TAG, "${user.image}")
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

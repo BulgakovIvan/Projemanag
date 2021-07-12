@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -35,6 +36,21 @@ class MyProfileActivity : BaseActivity() {
     private lateinit var mUserDetails: User
     private var mProfileImageURL: String = ""
 
+    private val changeImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        mSelectedImageFileUri = uri
+
+        try {
+            Glide
+                .with(this)
+                .load(mSelectedImageFileUri)
+                .fitCenter() //.centerCrop()
+                .placeholder(R.drawable.ic_user_place_holder)
+                .into(binding.ivProfileUserImage)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyProfileBinding.inflate(layoutInflater)
@@ -48,9 +64,9 @@ class MyProfileActivity : BaseActivity() {
         binding.ivProfileUserImage.setOnClickListener {
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                showImageChooser()
+                == PackageManager.PERMISSION_GRANTED) {
+
+                changeImage.launch("image/*")
 
             } else {
                 ActivityCompat.requestPermissions(
@@ -82,7 +98,7 @@ class MyProfileActivity : BaseActivity() {
             if (grantResults.isNotEmpty()
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
-                showImageChooser()
+                changeImage.launch("image/*")
             }
         } else {
             Toast.makeText(
@@ -90,34 +106,6 @@ class MyProfileActivity : BaseActivity() {
                 "You just denied the permission for storage. You con also allow it from settings.",
                 Toast.LENGTH_SHORT
             ).show()
-        }
-    }
-
-    // TODO: 09.07.2021 activity result
-    private fun showImageChooser() {
-        var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
-    }
-
-    // TODO: 09.07.2021 on activity result 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK
-            && requestCode == PICK_IMAGE_REQUEST_CODE
-            && data!!.data != null) {
-            mSelectedImageFileUri = data.data
-
-            try {
-                Glide
-                    .with(this)
-                    .load(mSelectedImageFileUri)
-                    .fitCenter() //.centerCrop()
-                    .placeholder(R.drawable.ic_user_place_holder)
-                    .into(binding.ivProfileUserImage)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
         }
     }
 
@@ -157,9 +145,10 @@ class MyProfileActivity : BaseActivity() {
             anyChangesMade = true
         }
 
-        if (anyChangesMade)
+        if (anyChangesMade) {
             FirestoreClass().updateUserProfileData(this, userHashMap)
             setResult(Activity.RESULT_OK)
+        }
 
         hideProgressDialog()
         finish()
