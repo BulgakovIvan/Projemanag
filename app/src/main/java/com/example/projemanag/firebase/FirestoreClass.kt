@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import com.example.projemanag.activities.*
+import com.example.projemanag.models.Board
 import com.example.projemanag.models.User
 import com.example.projemanag.utils.Constants
 import com.example.projemanag.utils.Constants.TAG
@@ -23,6 +24,20 @@ class FirestoreClass {
                 activity.userRegisteredSuccess()
             }.addOnFailureListener { e ->
                 Log.e("ups", "Register error! ", e)
+            }
+    }
+
+    fun createBoard(activity: CreateBoardActivity, board: Board) {
+        mFireStore.collection(Constants.BOARDS)
+            .document()
+            .set(board, SetOptions.merge())
+            .addOnSuccessListener {
+                Toast.makeText(activity, "Board created successfully!", Toast.LENGTH_SHORT).show()
+                activity.boardCreatedSuccessfully()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(TAG, "Error while creating a board.", e)
             }
     }
 

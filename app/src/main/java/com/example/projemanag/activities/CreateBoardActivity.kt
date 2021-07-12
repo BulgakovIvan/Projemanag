@@ -18,6 +18,7 @@ class CreateBoardActivity : BaseActivity() {
     private lateinit var binding: ActivityCreateBoardBinding
 
     private var mSelectedImageFileUri: Uri? = null
+    private lateinit var mUserName: String
 
     private val changeImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         mSelectedImageFileUri = uri
@@ -42,6 +43,10 @@ class CreateBoardActivity : BaseActivity() {
         binding.toolbarCreateBoardActivity.title = resources.getString(R.string.create_board_title)
         setupActionBar(binding.toolbarCreateBoardActivity)
 
+        if (intent.hasExtra(Constants.NAME)) {
+            mUserName = intent.getStringExtra(Constants.NAME).toString()
+        }
+
         binding.ivBoardImage.setOnClickListener {
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -61,11 +66,8 @@ class CreateBoardActivity : BaseActivity() {
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.READ_STORAGE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty()
@@ -80,5 +82,10 @@ class CreateBoardActivity : BaseActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    fun boardCreatedSuccessfully() {
+        hideProgressDialog()
+        finish()
     }
 }
