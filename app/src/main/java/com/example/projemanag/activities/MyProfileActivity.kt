@@ -55,8 +55,8 @@ class MyProfileActivity : BaseActivity() {
         binding = ActivityMyProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupActionBar(binding.toolbarMyProfileActivity)
         binding.toolbarMyProfileActivity.title = resources.getString(R.string.my_profile_title)
+        setupActionBar(binding.toolbarMyProfileActivity)
 
         FirestoreClass().loadUserData(this)
 
