@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
@@ -19,8 +20,12 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var drawer: DrawerLayout
 
-    companion object {
-        const val MY_PROFILE_REQUEST_CODE: Int = 11
+    private val startMyProfileActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            FirestoreClass().loadUserData(this)
+        } else {
+            Log.e(TAG, "No update for profile activity")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,17 +38,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<NavigationView>(R.id.nav_view).setNavigationItemSelectedListener(this)
 
         FirestoreClass().loadUserData(this)
-    }
-
-    // TODO: 12.07.2021 on activity result profile
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK &&
-            requestCode == MY_PROFILE_REQUEST_CODE) {
-            FirestoreClass().loadUserData(this)
-        } else {
-            Log.e(TAG, "No update for profile activity")
-        }
     }
 
     private fun setupActionBar() {
@@ -86,8 +80,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_my_profile -> {
-                startActivityForResult(Intent(this, MyProfileActivity::class.java),
-                MY_PROFILE_REQUEST_CODE)
+                startMyProfileActivity.launch(Intent(this, MyProfileActivity::class.java))
             }
             R.id.nav_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
