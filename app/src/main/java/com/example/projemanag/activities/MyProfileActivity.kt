@@ -93,11 +93,13 @@ class MyProfileActivity : BaseActivity() {
         }
     }
 
+    // TODO: 09.07.2021 activity result
     private fun showImageChooser() {
         var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
     }
 
+    // TODO: 09.07.2021 on activity result 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK
@@ -157,6 +159,7 @@ class MyProfileActivity : BaseActivity() {
 
         if (anyChangesMade)
             FirestoreClass().updateUserProfileData(this, userHashMap)
+            setResult(Activity.RESULT_OK)
 
         hideProgressDialog()
         finish()
