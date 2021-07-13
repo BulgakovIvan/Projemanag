@@ -41,6 +41,26 @@ class FirestoreClass {
             }
     }
 
+    fun getBoardList(activity: MainActivity) {
+        mFireStore.collection(Constants.BOARDS)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e(TAG, document.toString())
+                val boardList: ArrayList<Board> = ArrayList()
+                for (i in document) {
+                    val board = i.toObject(Board::class.java)
+                    board.documentId = i.id
+                    boardList.add(board)
+                }
+                activity.populateBoardListToUI(boardList)
+            }
+            .addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(TAG, "Error while download boardList")
+            }
+    }
+
     fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
@@ -58,7 +78,7 @@ class FirestoreClass {
             }
     }
 
-    fun loadUserData(activity: Activity) {
+    fun loadUserData(activity: Activity, readBoardLids: Boolean = false) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
             .get()
@@ -68,7 +88,7 @@ class FirestoreClass {
 
                     when (activity) {
                         is SingInActivity -> activity.singInSuccess(loggedInUser)
-                        is MainActivity -> activity.updateNavigationUserDetails(loggedInUser)
+                        is MainActivity -> activity.updateNavigationUserDetails(loggedInUser, readBoardLids)
                         is MyProfileActivity -> activity.setUserDataInUI(loggedInUser)
                     }
 
