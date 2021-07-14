@@ -27,6 +27,21 @@ class FirestoreClass {
             }
     }
 
+    fun getBoardDetails(activity: TaskListActivity, documentId: String) {
+        mFireStore.collection(Constants.BOARDS)
+            .document(documentId)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e(TAG, document.toString())
+
+                activity.boardDetails(document.toObject(Board::class.java)!!)
+            }
+            .addOnFailureListener {
+                activity.hideProgressDialog()
+                Log.e(TAG, "Error while download document")
+            }
+    }
+
     fun createBoard(activity: CreateBoardActivity, board: Board) {
         mFireStore.collection(Constants.BOARDS)
             .document()
@@ -102,7 +117,7 @@ class FirestoreClass {
 
     fun getCurrentUserId(): String {
 
-        var currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUser = FirebaseAuth.getInstance().currentUser
         var currentUserId = ""
         if (currentUser != null) {
             currentUserId = currentUser.uid
