@@ -74,7 +74,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             rView.layoutManager = LinearLayoutManager(this)
             rView.setHasFixedSize(true)
-            rView.adapter = BoardItemAdapter(this, boardList)
+
+            val adapter = BoardItemAdapter(this, boardList)
+            adapter.setOnClickListener(object: BoardItemAdapter.OnClickListener{
+                override fun onClick(position: Int, model: Board) {
+                    startActivity(Intent(this@MainActivity, TaskListActivity::class.java))
+                }
+            } )
+
+            rView.adapter = adapter
+
+
         } else {
             rView.visibility = View.GONE
             findViewById<TextView>(R.id.tv_no_boards_available).visibility = View.VISIBLE
