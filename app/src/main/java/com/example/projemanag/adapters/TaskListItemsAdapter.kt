@@ -1,0 +1,69 @@
+package com.example.projemanag.adapters
+
+import android.content.Context
+import android.content.res.Resources
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.example.projemanag.R
+import com.example.projemanag.databinding.ItemBoardBinding
+import com.example.projemanag.databinding.ItemTaskBinding
+import com.example.projemanag.models.Task
+import com.example.projemanag.utils.Constants.TAG
+import com.google.rpc.context.AttributeContext
+
+class TaskListItemsAdapter(private val context: Context,
+                           private val list: ArrayList<Task>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+        val view = LayoutInflater
+            .from(context)
+            .inflate(R.layout.item_task, parent, false)
+
+        // Here the layout params are converted dynamically according to the screen size
+        // as width is 70% and height is wrap_content.
+        val layoutParams = LinearLayout.LayoutParams(
+            (parent.width * 0.7).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        // Here the dynamic margins are applied to the view.
+        layoutParams.setMargins((15.toDp()).toPx(), 0, (40.toDp()).toPx(), 0)
+        view.layoutParams = layoutParams
+
+        return MyViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val model = list[position]
+        Log.e(TAG, "size: ${list.size}, position: $position")
+
+        if (holder is MyViewHolder) {
+            with(holder) {
+                if (position == list.size - 1) {
+                    binding.tvAddTaskList.visibility = View.VISIBLE
+                    binding.llTaskItem.visibility = View.GONE
+                } else {
+                    binding.tvAddTaskList.visibility = View.GONE
+                    binding.llTaskItem.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    private fun Int.toDp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
+    private fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+    private class MyViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        val binding = ItemTaskBinding.bind(view)
+    }
+}
