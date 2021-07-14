@@ -28,11 +28,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var drawer: DrawerLayout
     private lateinit var mUserName: String
 
-    private val startMyProfileActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+    private val startMyProfileActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode == Activity.RESULT_OK) {
             FirestoreClass().loadUserData(this)
         } else {
             Log.e(TAG, "No update for profile activity")
+        }
+    }
+
+    private val startCreateBoardActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            FirestoreClass().getBoardList(this)
+        } else {
+            Log.e(TAG, "New board was not created")
         }
     }
 
@@ -50,7 +60,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener {
             val intent = Intent(this, CreateBoardActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
-            startActivity(intent)
+            startCreateBoardActivity.launch(intent)
         }
     }
 
