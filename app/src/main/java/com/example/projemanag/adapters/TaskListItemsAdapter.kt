@@ -44,13 +44,28 @@ class TaskListItemsAdapter(private val context: Context,
         Log.e(TAG, "size: ${list.size}, position: $position")
 
         if (holder is MyViewHolder) {
-            with(holder) {
+            with(holder.binding) {
                 if (position == list.size - 1) {
-                    binding.tvAddTaskList.visibility = View.VISIBLE
-                    binding.llTaskItem.visibility = View.GONE
+                    tvAddTaskList.visibility = View.VISIBLE
+                    llTaskItem.visibility = View.GONE
                 } else {
-                    binding.tvAddTaskList.visibility = View.GONE
-                    binding.llTaskItem.visibility = View.VISIBLE
+                    tvAddTaskList.visibility = View.GONE
+                    llTaskItem.visibility = View.VISIBLE
+                }
+
+                tvTaskListTitle.text = model.title
+                tvAddTaskList.setOnClickListener {
+                    tvAddTaskList.visibility = View.GONE
+                    cvAddTaskListName.visibility = View.VISIBLE
+                }
+
+                ibCloseListName.setOnClickListener {
+                    tvAddTaskList.visibility = View.VISIBLE
+                    cvAddTaskListName.visibility = View.GONE
+                }
+
+                ibDoneListName.setOnClickListener {
+                    // TODO: 15.07.2021 create entry in DB and display the task list
                 }
             }
         }

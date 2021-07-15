@@ -12,6 +12,7 @@ import com.example.projemanag.utils.Constants
 
 class TaskListActivity : BaseActivity() {
     private lateinit var binding: ActivityTaskListBinding
+    private lateinit var mBoardDetails: Board
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +25,11 @@ class TaskListActivity : BaseActivity() {
 
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().getBoardDetails(this, boardDocumentId)
-
-
-
-
     }
 
     fun boardDetails(board: Board) {
+        mBoardDetails = board
+
         hideProgressDialog()
         binding.toolbarTaskListActivity.title = board.name
         setupActionBar(binding.toolbarTaskListActivity)
@@ -45,5 +44,9 @@ class TaskListActivity : BaseActivity() {
         binding.rvTaskList.setHasFixedSize(true)
         val adapter = TaskListItemsAdapter(this, board.taskList)
         binding.rvTaskList.adapter = adapter
+    }
+
+    fun addUpdateTaskListSuccess() {
+        FirestoreClass().getBoardDetails(this, mBoardDetails.documentId)
     }
 }

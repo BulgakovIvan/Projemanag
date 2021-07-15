@@ -34,7 +34,9 @@ class FirestoreClass {
             .addOnSuccessListener { document ->
                 Log.e(TAG, document.toString())
 
-                activity.boardDetails(document.toObject(Board::class.java)!!)
+                val board = document.toObject(Board::class.java)!!
+                board.documentId = documentId
+                activity.boardDetails(board)
             }
             .addOnFailureListener {
                 activity.hideProgressDialog()
@@ -76,6 +78,25 @@ class FirestoreClass {
             }
     }
 
+    fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
+        val taskListHashMap = HashMap<String, Any>()
+        taskListHashMap[Constants.TASK_LIST] = board.taskList
+
+        mFireStore
+            .collection(Constants.BOARDS)
+            .document(board.documentId)
+            .update(taskListHashMap)
+            .addOnSuccessListener {
+                Log.e(TAG, "TaskList update successfully.")
+
+                activity.addUpdateTaskListSuccess()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(TAG, "Error while creating a board.", e)
+            }
+    }
+
     fun updateUserProfileData(activity: MyProfileActivity, userHashMap: HashMap<String, Any>) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserId())
@@ -87,7 +108,7 @@ class FirestoreClass {
             }
             .addOnFailureListener { e ->
                 activity.hideProgressDialog()
-                Log.e(TAG, "Error wile update profile data.")
+                Log.e(TAG, "Error wile update profile data.", e)
                 Toast.makeText(activity, "Error: profile data updated.",
                     Toast.LENGTH_SHORT).show()
             }
