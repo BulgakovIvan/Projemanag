@@ -35,18 +35,28 @@ class TaskListActivity : BaseActivity() {
         setupActionBar(binding.toolbarTaskListActivity)
 
         val addTaskList = Task(resources.getString(R.string.add_list))
-        board.taskList.add((addTaskList))
+        board.taskList.add(addTaskList)
 
         binding.rvTaskList.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.HORIZONTAL,
-            false)
+            this, LinearLayoutManager.HORIZONTAL, false)
         binding.rvTaskList.setHasFixedSize(true)
+
         val adapter = TaskListItemsAdapter(this, board.taskList)
         binding.rvTaskList.adapter = adapter
     }
 
     fun addUpdateTaskListSuccess() {
+        hideProgressDialog()
+        showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().getBoardDetails(this, mBoardDetails.documentId)
+    }
+
+    fun createTaskList(taskListName: String) {
+        val task = Task(taskListName, FirestoreClass().getCurrentUserId())
+        mBoardDetails.taskList.add(0, task)
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FirestoreClass().addUpdateTaskList(this, mBoardDetails)
     }
 }

@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projemanag.R
+import com.example.projemanag.activities.TaskListActivity
 import com.example.projemanag.databinding.ItemBoardBinding
 import com.example.projemanag.databinding.ItemTaskBinding
 import com.example.projemanag.models.Task
@@ -41,7 +43,6 @@ class TaskListItemsAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val model = list[position]
-        Log.e(TAG, "size: ${list.size}, position: $position")
 
         if (holder is MyViewHolder) {
             with(holder.binding) {
@@ -54,6 +55,7 @@ class TaskListItemsAdapter(private val context: Context,
                 }
 
                 tvTaskListTitle.text = model.title
+
                 tvAddTaskList.setOnClickListener {
                     tvAddTaskList.visibility = View.GONE
                     cvAddTaskListName.visibility = View.VISIBLE
@@ -65,7 +67,15 @@ class TaskListItemsAdapter(private val context: Context,
                 }
 
                 ibDoneListName.setOnClickListener {
-                    // TODO: 15.07.2021 create entry in DB and display the task list
+                    val listName = etTaskListName.text.toString()
+                    if (listName.isNotEmpty()) {
+                        if (context is TaskListActivity) {
+                            context.createTaskList(listName)
+                        }
+                    } else {
+                        Toast.makeText(context, "Please enter list name.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }

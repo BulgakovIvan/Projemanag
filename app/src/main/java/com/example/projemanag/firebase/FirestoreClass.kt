@@ -32,7 +32,7 @@ class FirestoreClass {
             .document(documentId)
             .get()
             .addOnSuccessListener { document ->
-                Log.e(TAG, document.toString())
+//                Log.e(TAG, document.toString())
 
                 val board = document.toObject(Board::class.java)!!
                 board.documentId = documentId
@@ -63,7 +63,7 @@ class FirestoreClass {
             .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserId())
             .get()
             .addOnSuccessListener { document ->
-                Log.e(TAG, document.toString())
+//                Log.e(TAG, document.toString())
                 val boardList: ArrayList<Board> = ArrayList()
                 for (i in document) {
                     val board = i.toObject(Board::class.java)
@@ -132,7 +132,7 @@ class FirestoreClass {
                 if (activity is BaseActivity) {
                     activity.hideProgressDialog()
                 }
-                Log.e("ups", "Register error! ", e)
+                Log.e(TAG, "Register error! ", e)
             }
     }
 
