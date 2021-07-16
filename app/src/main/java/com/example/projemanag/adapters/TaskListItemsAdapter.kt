@@ -105,6 +105,35 @@ class TaskListItemsAdapter(private val context: Context,
                 ibDeleteList.setOnClickListener {
                     alertDialogForDeleteList(position, model.title)
                 }
+
+                tvAddCard.setOnClickListener {
+                    tvAddCard.visibility = View.GONE
+                    cvAddCard.visibility = View.VISIBLE
+                }
+
+                ibCloseCardName.setOnClickListener {
+                    tvAddCard.visibility = View.VISIBLE
+                    cvAddCard.visibility = View.GONE
+                }
+
+                ibDoneCardName.setOnClickListener {
+                    val cardName = etCardName.text.toString()
+                    if (cardName.isNotEmpty()) {
+                        if (context is TaskListActivity) {
+                            context.addCardToTaskList(position, cardName)
+                        }
+                    } else {
+                        Toast.makeText(context, "Please enter a card name.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+
+
+
+
+
+
+
             }
         }
     }
