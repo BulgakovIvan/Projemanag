@@ -24,7 +24,7 @@ open class BaseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_base)
     }
 
-    fun showProgressDialog(text: String) {
+    fun showProgressDialog(text: String = resources.getString(R.string.please_wait)) {
         mProgressDialog = Dialog(this)
 
         mProgressDialog.setContentView(R.layout.dialog_progress)
@@ -69,13 +69,14 @@ open class BaseActivity : AppCompatActivity() {
         snackBar.show()
     }
 
-    fun setupActionBar(toolbar: androidx.appcompat.widget.Toolbar) {
+    fun setupActionBar(toolbar: androidx.appcompat.widget.Toolbar, title: String = "") {
         setSupportActionBar(toolbar)
 
         val actionBar = supportActionBar
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24)
+            if (title.isNotEmpty()) actionBar.title = title
 
             toolbar.setNavigationOnClickListener { onBackPressed() }
         }
