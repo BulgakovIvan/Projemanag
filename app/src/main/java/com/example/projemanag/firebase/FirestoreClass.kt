@@ -146,4 +146,25 @@ class FirestoreClass {
 
         return currentUserId
     }
+
+    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>) {
+        mFireStore.collection(Constants.USERS)
+            .whereIn(Constants.ID, assignedTo)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e(TAG, "Member list loaded.")
+
+                val userList: ArrayList<User> = ArrayList()
+                for (i in document.documents) {
+                    val user = i.toObject(User::class.java)
+                    if (user != null) userList.add(user)
+                }
+
+                activity.setupMembersList(userList)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(TAG, "Error while loading a member list.", e)
+            }
+    }
 }

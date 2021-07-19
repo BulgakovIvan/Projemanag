@@ -17,6 +17,7 @@ object Constants {
     const val TASK_LIST: String = "taskList"
     const val READ_STORAGE_PERMISSION_CODE = 1
     const val BOARD_DETAIL: String = "board_detail"
+    const val ID: String = "id"
 
     fun getFileExtension(activity: Activity, uri: Uri?): String? {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(activity.contentResolver.getType(uri!!))
