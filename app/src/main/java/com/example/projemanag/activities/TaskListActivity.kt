@@ -1,9 +1,12 @@
 package com.example.projemanag.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.projemanag.R
 import com.example.projemanag.adapters.TaskListItemsAdapter
@@ -13,22 +16,34 @@ import com.example.projemanag.models.Board
 import com.example.projemanag.models.Card
 import com.example.projemanag.models.Task
 import com.example.projemanag.utils.Constants
+import com.example.projemanag.utils.Constants.TAG
 
 class TaskListActivity : BaseActivity() {
     private lateinit var binding: ActivityTaskListBinding
     private lateinit var mBoardDetails: Board
+    private lateinit var mBoardDocumentId: String
+
+    private val startMembersActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            // TODO: 21.07.2021
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().getBoardDetails(this, mBoardDocumentId)
+        } else {
+            Log.e(TAG, "Cancelled (startMembersActivity).")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTaskListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var boardDocumentId = ""
         if (intent.hasExtra(Constants.DOCUMENT_ID))
-            boardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
+            mBoardDocumentId = intent.getStringExtra(Constants.DOCUMENT_ID).toString()
 
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().getBoardDetails(this, boardDocumentId)
+        FirestoreClass().getBoardDetails(this, mBoardDocumentId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,9 +54,11 @@ class TaskListActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_members -> {
+
+                // TODO: 21.07.2021 start for result
                 val intent = Intent(this, MembersActivity::class.java)
                 intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
-                startActivity(intent)
+                startMembersActivity.launch(intent)
             }
         }
 

@@ -1,5 +1,6 @@
 package com.example.projemanag.activities
 
+import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
 import android.view.Menu
@@ -19,6 +20,8 @@ import com.example.projemanag.utils.Constants
 class MembersActivity : BaseActivity() {
     private lateinit var binding: ActivityMembersBinding
     private lateinit var mBoardDetails: Board
+    private lateinit var mAssignedMembersList: ArrayList<User>
+    private var anyChangesMade = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +54,15 @@ class MembersActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        if (anyChangesMade) {
+            setResult(Activity.RESULT_OK)
+        }
+        super.onBackPressed()
+    }
+
     fun setupMembersList(list: ArrayList<User>) {
+        mAssignedMembersList = list
         hideProgressDialog()
 
         binding.rvMembersList.let {
@@ -63,6 +74,11 @@ class MembersActivity : BaseActivity() {
 
     }
 
+    fun memberDetails(user: User) {
+        mBoardDetails.assignedTo.add(user.id)
+        FirestoreClass().assignedMemberToBoard(this, mBoardDetails, user)
+    }
+
     private fun dialogSearchMember() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_search_member)
@@ -70,7 +86,8 @@ class MembersActivity : BaseActivity() {
             val email = dialog.findViewById<AppCompatEditText>(R.id.et_email_search_member).text.toString()
             if (email.isNotEmpty()) {
                 dialog.dismiss()
-                // TODO: 19.07.2021
+                showProgressDialog()
+                FirestoreClass().getMemberDetails(this, email)
             } else {
                 Toast.makeText(this, "Please enter members email address.", Toast.LENGTH_SHORT)
                     .show()
@@ -80,6 +97,13 @@ class MembersActivity : BaseActivity() {
             dialog.dismiss()
         }
         dialog.show()
+    }
 
+    fun memberAssignSuccess(user: User) {
+        mAssignedMembersList.add(user)
+
+        anyChangesMade = true
+
+        setupMembersList(mAssignedMembersList)
     }
 }
