@@ -94,4 +94,6 @@ open class BaseActivity : AppCompatActivity() {
             )
         }
     }
+
+    open fun addUpdateSuccess() {}
 }

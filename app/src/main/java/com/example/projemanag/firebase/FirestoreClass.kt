@@ -78,7 +78,7 @@ class FirestoreClass {
             }
     }
 
-    fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
+    fun addUpdateTaskList(activity: BaseActivity, board: Board) {
         val taskListHashMap = HashMap<String, Any>()
         taskListHashMap[Constants.TASK_LIST] = board.taskList
 
@@ -89,7 +89,7 @@ class FirestoreClass {
             .addOnSuccessListener {
                 Log.e(TAG, "TaskList update successfully.")
 
-                activity.addUpdateTaskListSuccess()
+                activity.addUpdateSuccess()
             }
             .addOnFailureListener { e ->
                 activity.hideProgressDialog()

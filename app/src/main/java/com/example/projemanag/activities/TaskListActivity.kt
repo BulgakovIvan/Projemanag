@@ -33,6 +33,16 @@ class TaskListActivity : BaseActivity() {
         }
     }
 
+    private val startCardDetailsActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            showProgressDialog()
+            FirestoreClass().getBoardDetails(this, mBoardDocumentId)
+        } else {
+            Log.e(TAG, "Cancelled (startCardDetailsActivity).")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTaskListBinding.inflate(layoutInflater)
@@ -67,7 +77,7 @@ class TaskListActivity : BaseActivity() {
         intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
         intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
         intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
-        startActivity(intent)
+        startCardDetailsActivity.launch(intent)
     }
 
     fun boardDetails(board: Board) {
@@ -88,7 +98,7 @@ class TaskListActivity : BaseActivity() {
         binding.rvTaskList.adapter = adapter
     }
 
-    fun addUpdateTaskListSuccess() {
+    override fun addUpdateSuccess() {
         hideProgressDialog()
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().getBoardDetails(this, mBoardDetails.documentId)
