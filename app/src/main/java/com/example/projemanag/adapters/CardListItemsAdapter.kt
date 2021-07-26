@@ -1,6 +1,7 @@
 package com.example.projemanag.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projemanag.R
 import com.example.projemanag.models.Card
+import com.example.projemanag.utils.Constants.TAG
 
 open class CardListItemsAdapter(
     private val context: Context,
@@ -31,6 +33,12 @@ open class CardListItemsAdapter(
 
         if (holder is MyViewHolder) {
             holder.cardName.text = model.name
+
+            holder.itemView.setOnClickListener {
+                if (onClickListener != null) {
+                    onClickListener!!.onClick(position) // cardPosition
+                }
+            }
         }
     }
 
@@ -43,7 +51,7 @@ open class CardListItemsAdapter(
     }
 
     interface OnClickListener {
-        fun onClick(position: Int, card: Card)
+        fun onClick(position: Int)
     }
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {

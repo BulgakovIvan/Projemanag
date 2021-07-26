@@ -26,8 +26,7 @@ class TaskListActivity : BaseActivity() {
     private val startMembersActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode == Activity.RESULT_OK) {
-            // TODO: 21.07.2021
-            showProgressDialog(resources.getString(R.string.please_wait))
+            showProgressDialog()
             FirestoreClass().getBoardDetails(this, mBoardDocumentId)
         } else {
             Log.e(TAG, "Cancelled (startMembersActivity).")
@@ -54,8 +53,6 @@ class TaskListActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_members -> {
-
-                // TODO: 21.07.2021 start for result
                 val intent = Intent(this, MembersActivity::class.java)
                 intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
                 startMembersActivity.launch(intent)
@@ -63,6 +60,10 @@ class TaskListActivity : BaseActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    fun cardDetails(taskListPosition: Int, cardPosition: Int) {
+        startActivity(Intent(this, CardDetailsActivity::class.java))
     }
 
     fun boardDetails(board: Board) {
