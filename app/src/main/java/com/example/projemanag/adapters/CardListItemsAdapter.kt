@@ -1,6 +1,7 @@
 package com.example.projemanag.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,13 @@ open class CardListItemsAdapter(
         val model = list[position]
 
         if (holder is MyViewHolder) {
+            if (model.labelColor.isNotEmpty()) {
+                holder.viewLabelColor.visibility = View.VISIBLE
+                holder.viewLabelColor.setBackgroundColor(Color.parseColor(model.labelColor))
+            } else {
+                holder.viewLabelColor.visibility = View.GONE
+            }
+
             holder.cardName.text = model.name
 
             holder.itemView.setOnClickListener {
@@ -57,5 +65,6 @@ open class CardListItemsAdapter(
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardName: TextView = view.findViewById(R.id.tv_card_name)
         val membersName: TextView = view.findViewById(R.id.tv_members_name)
+        val viewLabelColor: View = view.findViewById(R.id.view_label_color)
     }
 }

@@ -30,7 +30,7 @@ abstract class LabelColorListDialog(
     }
 
     private fun setupRecyclerView(view: View) {
-        view.findViewById<TextView>(R.id.tvTitle)
+        view.findViewById<TextView>(R.id.tvTitle).text = title
 
         val rvList = view.findViewById<RecyclerView>(R.id.rvList)
         rvList.layoutManager = LinearLayoutManager(context)
