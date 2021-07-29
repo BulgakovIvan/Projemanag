@@ -15,6 +15,7 @@ import com.example.projemanag.firebase.FirestoreClass
 import com.example.projemanag.models.Board
 import com.example.projemanag.models.Card
 import com.example.projemanag.models.Task
+import com.example.projemanag.models.User
 import com.example.projemanag.utils.Constants
 import com.example.projemanag.utils.Constants.TAG
 
@@ -22,6 +23,7 @@ class TaskListActivity : BaseActivity() {
     private lateinit var binding: ActivityTaskListBinding
     private lateinit var mBoardDetails: Board
     private lateinit var mBoardDocumentId: String
+    private lateinit var mAssignedMemberDetailList: ArrayList<User>
 
     private val startMembersActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()){
@@ -77,6 +79,7 @@ class TaskListActivity : BaseActivity() {
         intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
         intent.putExtra(Constants.TASK_LIST_ITEM_POSITION, taskListPosition)
         intent.putExtra(Constants.CARD_LIST_ITEM_POSITION, cardPosition)
+        intent.putExtra(Constants.BOARD_MEMBER_LIST, mAssignedMemberDetailList)
         startCardDetailsActivity.launch(intent)
     }
 
@@ -96,6 +99,9 @@ class TaskListActivity : BaseActivity() {
 
         val adapter = TaskListItemsAdapter(this, board.taskList)
         binding.rvTaskList.adapter = adapter
+
+        showProgressDialog()
+        FirestoreClass().getAssignedMembersListDetails(this, mBoardDetails.assignedTo)
     }
 
     override fun addUpdateSuccess() {
@@ -151,5 +157,10 @@ class TaskListActivity : BaseActivity() {
 
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
+
+    fun boardMembersDetailsList(list: ArrayList<User>) {
+        mAssignedMemberDetailList = list
+        hideProgressDialog()
     }
 }

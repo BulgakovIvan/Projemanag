@@ -14,7 +14,9 @@ import com.example.projemanag.firebase.FirestoreClass
 import com.example.projemanag.models.Board
 import com.example.projemanag.models.Card
 import com.example.projemanag.models.Task
+import com.example.projemanag.models.User
 import com.example.projemanag.utils.Constants
+import com.projemanag.dialogs.MembersListDialog
 
 class CardDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityCardDetailsBinding
@@ -22,6 +24,7 @@ class CardDetailsActivity : BaseActivity() {
     private var mTaskListPosition = -1
     private var mCardPosition = -1
     private var mSelectedColor = ""
+    private lateinit var mMembersDetailList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +38,7 @@ class CardDetailsActivity : BaseActivity() {
         binding.etNameCardDetails.setText(
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].name)
         binding.etNameCardDetails.setSelection(
-            binding.etNameCardDetails.text.toString().length
-        )
+            binding.etNameCardDetails.text.toString().length)
 
         mSelectedColor = mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].labelColor
         if (mSelectedColor.isNotEmpty()) {
@@ -53,6 +55,10 @@ class CardDetailsActivity : BaseActivity() {
 
         binding.tvSelectLabelColor.setOnClickListener {
             labelColorsListDialog()
+        }
+
+        binding.tvSelectMembers.setOnClickListener {
+            membersListDialog()
         }
     }
 
@@ -83,6 +89,9 @@ class CardDetailsActivity : BaseActivity() {
         }
         if (intent.hasExtra(Constants.CARD_LIST_ITEM_POSITION)) {
             mCardPosition = intent.getIntExtra(Constants.CARD_LIST_ITEM_POSITION, -1)
+        }
+        if (intent.hasExtra(Constants.BOARD_MEMBER_LIST)) {
+            mMembersDetailList = intent.getParcelableArrayListExtra(Constants.BOARD_MEMBER_LIST)!!
         }
     }
 
@@ -169,5 +178,37 @@ class CardDetailsActivity : BaseActivity() {
             }
         }
         listDialog.show()
+    }
+
+    private fun membersListDialog() {
+        var cardAssignedMembersList = mBoardDetails
+            .taskList[mTaskListPosition]
+            .cards[mCardPosition].assignedTo
+
+        if (cardAssignedMembersList.size > 0) {
+            for (i in mMembersDetailList.indices) {
+                for (j in cardAssignedMembersList) {
+                    if (mMembersDetailList[i].id == j) {
+                        mMembersDetailList[i].selected = true
+                    }
+                }
+            }
+        } else {
+            for (i in mMembersDetailList.indices) {
+                mMembersDetailList[i].selected = false
+            }
+        }
+
+        val listDialog = object: MembersListDialog(
+            this,
+            mMembersDetailList,
+            resources.getString(R.string.str_select_member)
+        ){
+            override fun onItemSelected(user: User, action: String) {
+
+            }
+        }
+        listDialog.show()
+
     }
 }
