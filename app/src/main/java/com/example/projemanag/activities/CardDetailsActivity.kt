@@ -60,6 +60,8 @@ class CardDetailsActivity : BaseActivity() {
         binding.tvSelectMembers.setOnClickListener {
             membersListDialog()
         }
+
+        setupSelectedMembersList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -108,6 +110,9 @@ class CardDetailsActivity : BaseActivity() {
             mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition].assignedTo,
             mSelectedColor
         )
+
+        val taskList: ArrayList<Task> = mBoardDetails.taskList
+        taskList.removeAt(taskList.size - 1)
 
         mBoardDetails.taskList[mTaskListPosition].cards[mCardPosition] = card
 
@@ -205,7 +210,27 @@ class CardDetailsActivity : BaseActivity() {
             resources.getString(R.string.str_select_member)
         ){
             override fun onItemSelected(user: User, action: String) {
+                if (action == Constants.SELECT) {
+                    if (!mBoardDetails
+                            .taskList[mTaskListPosition]
+                            .cards[mCardPosition].assignedTo.contains(user.id)) {
+                        mBoardDetails
+                            .taskList[mTaskListPosition]
+                            .cards[mCardPosition].assignedTo.add(user.id)
+                    }
+                } else {
+                    mBoardDetails
+                        .taskList[mTaskListPosition]
+                        .cards[mCardPosition].assignedTo.remove(user.id)
 
+                    for (i in mMembersDetailList.indices) {
+                        if (mMembersDetailList[i].id == user.id) {
+                            mMembersDetailList[i].selected = false
+                        }
+                    }
+                }
+
+                setupSelectedMembersList()
             }
         }
         listDialog.show()
