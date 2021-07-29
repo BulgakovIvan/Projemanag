@@ -6,15 +6,15 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.projemanag.R
+import com.example.projemanag.adapters.CardMemberListItemAdapter
 import com.example.projemanag.databinding.ActivityCardDetailsBinding
 import com.example.projemanag.dialog.LabelColorListDialog
 import com.example.projemanag.firebase.FirestoreClass
-import com.example.projemanag.models.Board
-import com.example.projemanag.models.Card
-import com.example.projemanag.models.Task
-import com.example.projemanag.models.User
+import com.example.projemanag.models.*
 import com.example.projemanag.utils.Constants
 import com.projemanag.dialogs.MembersListDialog
 
@@ -181,7 +181,7 @@ class CardDetailsActivity : BaseActivity() {
     }
 
     private fun membersListDialog() {
-        var cardAssignedMembersList = mBoardDetails
+        val cardAssignedMembersList = mBoardDetails
             .taskList[mTaskListPosition]
             .cards[mCardPosition].assignedTo
 
@@ -209,6 +209,49 @@ class CardDetailsActivity : BaseActivity() {
             }
         }
         listDialog.show()
+
+    }
+
+    private fun setupSelectedMembersList() {
+        val cardAssignedMembersList = mBoardDetails
+            .taskList[mTaskListPosition]
+            .cards[mCardPosition].assignedTo
+
+        val selectedMembersList: ArrayList<SelectedMembers> = ArrayList()
+
+        for (i in mMembersDetailList.indices) {
+            for (j in cardAssignedMembersList) {
+                if (mMembersDetailList[i].id == j) {
+                    val selectedMember = SelectedMembers(
+                        mMembersDetailList[i].id,
+                        mMembersDetailList[i].image
+                    )
+
+                    selectedMembersList.add(selectedMember)
+                }
+            }
+        }
+
+        if (selectedMembersList.size > 0) {
+            selectedMembersList.add(SelectedMembers("", ""))
+            binding.tvSelectMembers.visibility = View.GONE
+            binding.rvSelectedMembersList.visibility = View.VISIBLE
+
+            binding.rvSelectedMembersList.layoutManager = GridLayoutManager(this, 6)
+            val adapter = CardMemberListItemAdapter(this, selectedMembersList)
+            binding.rvSelectedMembersList.adapter = adapter
+            adapter.setOnClickListener(
+                object : CardMemberListItemAdapter.OnClickListener {
+                    override fun onClick() {
+                        membersListDialog()
+                    }
+                }
+            )
+
+        } else {
+            binding.tvSelectMembers.visibility = View.VISIBLE
+            binding.rvSelectedMembersList.visibility = View.GONE
+        }
 
     }
 }
