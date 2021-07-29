@@ -1,18 +1,23 @@
 package com.example.projemanag.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.projemanag.R
+import com.example.projemanag.activities.CardDetailsActivity
+import com.example.projemanag.activities.TaskListActivity
 import com.example.projemanag.databinding.ItemCardSelectedMemberBinding
 import com.example.projemanag.models.SelectedMembers
+import com.example.projemanag.utils.Constants.TAG
 
 class CardMemberListItemAdapter(
     private val context: Context,
-    private val list: ArrayList<SelectedMembers>
+    private val list: ArrayList<SelectedMembers>,
+    private val assignedMembers: Boolean
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
 
@@ -29,9 +34,18 @@ class CardMemberListItemAdapter(
         val model = list[position]
 
         if (holder is MyViewHolder) {
-            if (position == list.size - 1) {
+            if (position == list.size - 1 && assignedMembers) {
                 holder.binding.ivAddMember.visibility = View.VISIBLE
                 holder.binding.ivSelectedMemberImage.visibility = View.GONE
+
+                if (context is CardDetailsActivity) {
+                    holder.itemView.setOnClickListener {
+                        if (onClickListener != null) {
+                            onClickListener!!.onClick()
+                        }
+                    }
+                }
+
             } else {
                 holder.binding.ivAddMember.visibility = View.GONE
                 holder.binding.ivSelectedMemberImage.visibility = View.VISIBLE
@@ -44,11 +58,14 @@ class CardMemberListItemAdapter(
                     .into(holder.binding.ivSelectedMemberImage)
             }
 
-            holder.itemView.setOnClickListener {
-                if (onClickListener != null) {
-                    onClickListener!!.onClick()
+            if (context is TaskListActivity) {
+                holder.itemView.setOnClickListener {
+                    if (onClickListener != null) {
+                        onClickListener!!.onClick()
+                    }
                 }
             }
+
         }
     }
 
